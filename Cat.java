@@ -1,10 +1,15 @@
 package assignment6;
+import java.util.*;
 
 public class Cat extends Pet implements Boardable {
 	
 	private String hairLength;
 	public int startMonth,startDay,startYear;
 	public int endMonth,endDay,endYear;
+	Calendar c_start=Calendar.getInstance();
+	Calendar c_end=Calendar.getInstance();
+	Calendar c_board=Calendar.getInstance();
+
 	
 	Cat (String name, String ownerName, String color, String hairLength){
 		super(name, ownerName, color);
@@ -25,6 +30,9 @@ public class Cat extends Pet implements Boardable {
 		boolean yRange=(startYear<=9999)&&(startYear>=1000);
 		if((!mRange)||(!dRange)||(!yRange)) {
 			System.out.println("Wrong input.");
+		}else{
+			c_start.set(year, month, day);
+			System.out.println("BoardStart: "+startYear+","+startMonth+","+startDay);
 		}
 	}
 	public void setBoardEnd(int month, int day, int year){
@@ -36,29 +44,37 @@ public class Cat extends Pet implements Boardable {
 		boolean yRange=(endYear<=9999)&&(endYear>=1000);
 		if((!mRange)||(!dRange)||(!yRange)) {
 			System.out.println("Wrong input.");
+		}else{
+			c_end.set(year, month, day);
+			System.out.println("BoardEnd: "+endYear+","+endMonth+","+endDay);
 		}
 	}
 	public boolean boarding(int month, int day, int year){
-		boolean m1=(month>=startMonth)||(month<=endMonth);
-		boolean m2=(month>=startMonth)&&(month<=endMonth);
-		boolean d1=(day>=startDay)&&(day<=endDay);
-		boolean d2=(day>=startDay)&&(day<=endDay);
-		boolean y=(year>=startYear)&&(year<=endYear);
-		if(startYear==endYear){
-			if (year!=startYear) return false;
-			else return true;
-			
-		}
-		else if(startYear<endYear){
+		boolean mRange=(month<=12)&&(month>=1);
+		boolean dRange=(day<=31)&&(day>=1);
+		boolean yRange=(year<=9999)&&(year>=1000);
+		if((!mRange)||(!dRange)||(!yRange)) {
+			System.out.println("Wrong input.");
 			return false;
 		}
-		else return false;
+		else{
+		c_board.set(year, month, day);
+		long cBoardM=c_board.getTimeInMillis();
+		long cStartM=c_start.getTimeInMillis();
+		long cEndM=c_end.getTimeInMillis();
+		return ((cBoardM<=cEndM)&&(cBoardM>=cStartM))?true:false;
+		}
 	}
 	public static void main(String args[]){
-		Pet c=new Cat("Tom","Bob","Black","Short");
+		Cat c=new Cat("Tom","Bob","Black","Short");
 		c.setSex(2);
 		System.out.println(c.toString());
-	
+		c.setBoardStart(10,21,2015);
+		c.setBoardEnd(4,1,2016);
+		System.out.println(c.boarding(2, 14, 2015));
+		System.out.println(c.boarding(2, 14, 2016));
+		System.out.println(c.boarding(2, 34, 2016));// wrong input
+
 	}
 
 }
